@@ -1,7 +1,5 @@
 import java.util.List;
-import java.util.Collections;
 
-// AprovacaoController.java
 public class AprovacaoController {
     
     private CandidatoDAO candidatoDAO = new CandidatoDAO();
@@ -10,65 +8,133 @@ public class AprovacaoController {
     private VoluntarioDAO voluntarioDAO = new VoluntarioDAO();
     private ONGDAO ongDAO = new ONGDAO();
     private RecomendacaoDAO recomendacaoDAO = new RecomendacaoDAO();
-
+    
+    private RepresentanteRMS representanteLogado;
     private Sessao sessao; 
 
     public AprovacaoController(RepresentanteRMS representanteLogado) {
+        this.representanteLogado = representanteLogado;
         this.sessao = new Sessao(representanteLogado);
     }
 
-    // MENSAGEM: 1. buscarCandidatosPendentes()
     public CandidatoPendentes buscarCandidatosPendentes() {
-        System.out.println("\n[Controlador] >> RepresentanteRMS solicitou lista de pendentes.");
-        return candidatoDAO.buscarPendentes(); 
+        CandidatoPendentes listaPendentes = candidatoDAO.buscarPendentes(); 
+        List<Candidato> pendentes = listaPendentes.getListaPendentes();
+        if (pendentes.isEmpty()) {
+            System.out.println("\n[SISTEMA] Não há candidatos pendentes para análise.");
+        } else {
+            System.out.println("\n[SISTEMA] CANDIDATO(S) PENDENTE(S) ENCONTRADOS:");
+            for (Candidato c : pendentes) {
+                System.out.println("   ID: " + c.getId_Candidato() + " | Nome: " + c.getNome());
+            }
+        }
+        return listaPendentes;
     }
 
-    // MENSAGEM: 4. analisarCandidato(id)
-    public Candidato analisarCandidato(int idCandidato, CandidatoPendentes listaPendentes) {
+    public Candidato selecionaCandidato(int idCandidato, CandidatoPendentes listaPendentes) {
         Candidato candidato = listaPendentes.getCandidatoPorId(idCandidato);
+
         if (candidato == null) return null;
         
-        // Chamada DAO para popular detalhes (PessoaFisica e Perfil)
         Candidato detalhes = candidatoDAO.buscarDetalhes(idCandidato); 
         candidato.setPessoaFisica(detalhes.getPessoaFisica());
         candidato.setPerfil(detalhes.getPerfil());
+        
+        PessoaFisica pf = candidato.getPessoaFisica();
+        System.out.println("\n--- DETALHES DE IDENTIFICAÇÃO DO CANDIDATO ---");
+        System.out.println("Nome: " + candidato.getNome());
+        System.out.println("Email: " + candidato.getEmail());
+        if (pf != null) {
+            System.out.println("CPF: " + pf.getCPF());
+            System.out.println("Sexo: " + pf.getSexo());
+            System.out.println("Nacionalidade: " + pf.getNacionalidade());
+            System.out.println("Data Nasc.: " + pf.getDataNascimento());
+            System.out.println("Profissão: " + pf.getProfissao());
+            System.out.println("Endereço: " + pf.getEndereco());
+        }
+        System.out.println("-----------------------------------------------\n");
+
         return candidato;
     }
 
-    // MENSAGEM: 7a. aprovarAfiliacao(candidato)
+    // NOVOS MÉTODOS ADICIONADOS
     public Aprovacao aprovarAfiliacao(Candidato candidato) {
-        RepresentanteRMS aprovador = sessao.getRepresentante();
-        System.out.println("\n[Controlador] >> INÍCIO DA APROVAÇÃO (Transação lógica).");
+        System.out.println("\n[Controlador] Aprovando afiliação do candidato: " + candidato.getNome());
         
-        Aprovacao aprovacao = new Aprovacao(aprovador, "Aprovado");
-        aprovacao = aprovacaoDAO.registrarAprovacao(aprovacao); // Registra Aprovacao (8.)
+        // Cria sessão e aprovação
+        sessao.criarAprovacao();
+        Aprovacao aprovacao = sessao.getAprovacao();
+        aprovacao = aprovacaoDAO.registrarAprovacao(aprovacao);
         
-        afiliacaoDAO.atualizarStatus(candidato.getAfiliacao(), "Aprovada", aprovacao); // Atualiza Afiliacao (9.)
+        // Atualiza afiliação
+        afiliacaoDAO.atualizarStatus(candidato, candidato.getAfiliacao(), "Aprovado", aprovacao);
         
-        voluntarioDAO.criarVoluntario(candidato, aprovacao.getId_aprovacao()); // Cria Voluntario (10.)
+        // Cria voluntário
+        voluntarioDAO.criarVoluntario(candidato, aprovacao.getId_aprovacao());
         
-        List<ONG> ongsRecomendadas = ongDAO.buscarONGsECampanhasPorPerfil(candidato.getPerfil()); // Busca Recomendações (11.)
+        // Processa recomendações
+        solicitaRecomendacaoONGparceira(candidato, aprovacao);
         
-        System.out.println("[Controlador] >> Armazenando recomendações geradas.");
-        for (ONG ong : ongsRecomendadas) {
-            for (Campanha campanha : ong.getCampanhas()) {
-                Recomendacao r = new Recomendacao(campanha.getId_Campanha(), 1, aprovador.getId_RepresentanteRMS(), aprovacao.getId_aprovacao(), "Recomendação automática.");
-                recomendacaoDAO.armazenarRecomendacao(r); // Armazena Recomendação (12.)
-            }
-        }
+        // Gera credenciais
+        geraLoginSenhaVoluntario(candidato);
         
         System.out.println("\n[Controlador] SUCESSO! Candidato " + candidato.getNome() + " APROVADO.");
         return aprovacao;
     }
     
-    // MENSAGEM: 7b. rejeitarAfiliacao(candidato, motivo)
     public Aprovacao rejeitarAfiliacao(Candidato candidato, String motivo) {
-        Aprovacao aprovacao = new Aprovacao(sessao.getRepresentante(), "Rejeitado");
-        aprovacao.setMotivoRejeicao(motivo);
-        aprovacao = aprovacaoDAO.registrarAprovacao(aprovacao);
-        afiliacaoDAO.atualizarStatus(candidato.getAfiliacao(), "Rejeitada", aprovacao);
+        System.out.println("\n[Controlador] Rejeitando afiliação do candidato: " + candidato.getNome());
+        System.out.println("Motivo: " + motivo);
         
-        System.out.println("\n[Controlador] Afiliação de " + candidato.getNome() + " REJEITADA.");
+        Aprovacao aprovacao = new Aprovacao(representanteLogado, "Rejeitado");
+        aprovacao = aprovacaoDAO.registrarAprovacao(aprovacao);
+        afiliacaoDAO.atualizarStatus(candidato, candidato.getAfiliacao(), "Rejeitado", aprovacao);
+        
         return aprovacao;
+    }
+
+    public void solicitaAprovacao(Candidato candidato, Aprovacao resultado) {
+        // Método mantido para compatibilidade
+        if ("Aprovado".equals(resultado.getStatus())) {
+            aprovarAfiliacao(candidato);
+        }
+    }
+    
+    public void solicitaRecomendacaoONGparceira(Candidato candidato, Aprovacao aprovacao) {
+        System.out.println("\n[Controlador] Solicitando recomendações de ONGs parceiras para o perfil");
+        
+        List<ONG> ongsRecomendadas = ongDAO.buscarONGsECampanhasPorPerfil(candidato.getPerfil());
+        
+        System.out.println("[Controlador] >> Armazenando recomendações geradas.");
+        for (ONG ong : ongsRecomendadas) {
+            for (Campanha campanha : ong.getCampanhas()) {
+                Recomendacao r = new Recomendacao(
+                    campanha.getId_Campanha(), 
+                    ong.getId_ONG(), 
+                    representanteLogado.getId_RepresentanteRMS(), 
+                    aprovacao.getId_aprovacao(), 
+                    "Recomendação automática."
+                );
+                recomendacaoDAO.armazenarRecomendacao(r);
+            }
+        }
+    }
+    
+    public void aprovaRecomendacaoONG() {
+        System.out.println("\n[Controlador] Aprovando recomendações de ONGs parceiras.");
+    }
+    
+    public void geraLoginSenhaVoluntario(Candidato candidato) {
+        String login = "voluntario" + candidato.getId_Candidato();
+        String senha = "senha" + candidato.getId_Candidato();
+        enviaEmail(login, senha, candidato.getEmail());
+        System.out.println("\n[Controlador] Login e senha gerados para o voluntário:");
+    }
+    
+    public void enviaEmail(String login, String senha, String email) {
+        System.out.println("\n[Controlador] Enviando email para: " + email);
+        System.out.println("Login: " + login);
+        System.out.println("Senha: " + senha);
+        System.out.println("[Controlador] Email enviado com sucesso.");
     }
 }

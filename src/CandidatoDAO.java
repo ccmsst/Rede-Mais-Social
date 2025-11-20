@@ -45,4 +45,14 @@ public class CandidatoDAO {
         System.out.println("  [CandidatoDAO] SIMULANDO: Busca por detalhes e perfil.");
         return getMockCandidato();
     }
+    public void buscaCandidato(Candidato candidato) {
+        System.out.println("  [CandidatoDAO] SIMULAÇÃO: Buscando Candidato ID " + candidato.getId_Candidato());
+        candidato = getMockCandidato();
+        candidato.getPerfil();
+        candidato.getPerfil().getInteresses();
+        candidato.getPerfil().getHabilidades();
+    }
+    public void tranformaEmVoluntario(Candidato candidato) {
+        System.out.println("  [Candidato] Transformando em voluntário: " + candidato.getNome());
+    }
 }
