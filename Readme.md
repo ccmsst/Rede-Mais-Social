@@ -90,20 +90,31 @@ DAO (Persistência) CandidatoDAO, AprovacaoDAO, VoluntarioDAO, etc
 ### 🔄 Caso de Uso Implementado
 
 Caso de Uso
+
+
 <img width="473" height="218" alt="17636888613676842724933226598229" src="https://github.com/user-attachments/assets/ad04b095-e3d1-4351-a9ae-5c4f5a49311e" />
 
 Fluxo Principal
+
+
 <img width="481" height="352" alt="17636888750405845678816227640522" src="https://github.com/user-attachments/assets/6bdc7008-09a9-499e-81a8-60d481ccc4fa" />
+
 
 <img width="480" height="247" alt="17636888911096803981605847785211" src="https://github.com/user-attachments/assets/06aa92a3-e367-4633-9b77-3d11817eedb7" />
 
+
 Fluxos Alternativos
+
+
 <img width="487" height="487" alt="17636889059772667788401297884556" src="https://github.com/user-attachments/assets/5acc06ee-5d73-4e03-82ba-b4d06cebbb11" />
+
 
 <img width="492" height="285" alt="17636889177598400047712604508191" src="https://github.com/user-attachments/assets/81495950-46c1-4f49-90ac-c819411e6cc2" />
 
 
 Regra de Negócio Caso de Uso - Aprovação de Afiliação
+
+
 <img width="472" height="82" alt="17636889281492052511529567959587" src="https://github.com/user-attachments/assets/8543eb7b-a8b7-40f5-affb-b200c9b56a6f" />
 
 
@@ -136,9 +147,9 @@ src/
 └── VoluntarioDAO.java
 
 docs/
-├── banco.sql                          # Modelo completo do banco
-├── diagramas/                         # Diagramas UML
-└── prototipos/                        # Telas do sistema
+├── banco.sql                            # Modelo completo do banco
+├── diagramas.md                         # Diagramas UML
+└── prototipos.md                        # Telas do sistema
 ```
 
 ### 🛠 Tecnologias e Ferramentas
