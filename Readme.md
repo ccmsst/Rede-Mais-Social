@@ -270,7 +270,7 @@ Cada membro publicou individualmente na Wiki:
 · Protótipos e modelos
 
 ### 🎥 Vídeo Explicativo
-link do vídeo explicativo:  
+Link do vídeo explicativo: https://youtu.be/0rJPiina6rg?si=VpkgF77zrfcrqpvm
 
 📹 Conteúdo do Vídeo
 
