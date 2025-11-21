@@ -111,27 +111,24 @@ Regra de Negócio Caso de Uso - Aprovação de Afiliação
 
 ```
 src/
-├── boundary/
-│   └── AprovacaoBoundary.java          # Interface com usuário
-├── controller/
-│   └── AprovacaoController.java        # Lógica de negócio
-├── entity/                             # Classes de domínio
-│   ├── Candidato.java
-│   ├── Afiliacao.java
-│   ├── Aprovacao.java
-│   ├── Voluntario.java
-│   ├── PessoaFisica.java
-│   ├── Perfil.java
-│   ├── Habilidade.java
-│   └── Interesse.java
-├── repository/                         # Camada de persistência
-│   ├── CandidatoDAO.java
-│   ├── AprovacaoDAO.java
-│   ├── VoluntarioDAO.java
-│   ├── ONGDAO.java
-│   └── RecomendacaoDAO.java
-└── database/
-    └── DatabaseConfig.java             # Configuração do banco
+   # Interface com usuário
+├── AprovacaoBoundary.java
+   # Lógica de negócio     
+├── AprovacaoController.java     
+   # Classes de domínio
+├── Candidato.java
+├── Afiliacao.java
+├── Aprovacao.java
+├── Voluntario.java
+├── PessoaFisica.java
+├── Perfil.java
+├── Habilidade.java
+├── Interesse.java
+├── CandidatoDAO.java
+├── AprovacaoDAO.java
+├── VoluntarioDAO.java
+├── ONGDAO.java
+└── RecomendacaoDAO.java
 
 docs/
 ├── banco.sql                          # Modelo completo do banco
