@@ -1,45 +1,50 @@
-REDE MAIS SOCIAL
+## Rede Mais Social
+
 🏗️ Sistema de Aprovação de Afiliação - Rede Mais Social
-📋 Índice
-Visão Geral
 
-Arquitetura do Sistema
+### Índice
 
-Diagramas UML
+· Visão Geral
 
-Casos de Uso Implementados
+· Arquitetura do Sistema
 
-Estrutura do Projeto
+· Diagramas UML
 
-Tecnologias e Ferramentas
+· Casos de Uso Implementados
 
-Como Executar
+· Estrutura do Projeto
 
-Fluxos do Sistema
+· Tecnologias e Ferramentas
 
-Modelo de Dados
+· Como Executar
 
-Contribuições Individuais
+· Fluxos do Sistema
 
-Vídeo Explicativo
+· Modelo de Dados
 
-🎯 Visão Geral
+· Vídeo Explicativo
+
+### 🎯 Visão Geral
+
 O Rede Mais Social é uma plataforma digital que conecta voluntários, ONGs e pessoas que precisam de ajuda. O sistema facilita o processo de afiliação, recomendação e engajamento em ações sociais.
 
 Missão: "Ajudando o outro a crescer, você cresce também"
 
 🎯 Objetivos Principais
-Conectar voluntários com oportunidades de ajuda
 
-Facilitar a afiliação de voluntários e ONGs
+· Conectar voluntários com oportunidades de ajuda
 
-Recomendar matches entre perfis e necessidades
+· Facilitar a afiliação de voluntários e ONGs
 
-Gerenciar campanhas e vagas de voluntariado
+· Recomendar matches entre perfis e necessidades
 
-🏗️ Arquitetura do Sistema
+· Gerenciar campanhas e vagas de voluntariado
+
+### 🏗️ Arquitetura do Sistema
+
 📐 Padrão Arquitetural MVC
-text
+
+```
 ┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
 │    BOUNDARY     │    │    CONTROLLER    │    │     ENTITY      │
 │   (Interface)   │◄---│   (Lógica)       │---►│   (Domínio)     │
@@ -50,76 +55,61 @@ text
                        │      DAO        │
                        │  (Persistência) │
                        └─────────────────┘
+```
+
 🎯 Camadas Implementadas
-Boundary (Interface): AprovacaoBoundary
 
-Controller (Lógica): AprovacaoController
+Camada Componentes
+Boundary (Interface) AprovacaoBoundary
 
-Entity (Domínio): Candidato, Afiliação, Aprovacao, Voluntario
 
-DAO (Persistência): CandidatoDAO, AprovacaoDAO, VoluntarioDAO
+Controller (Lógica) AprovacaoController
 
-📊 Diagramas UML
-1. Diagrama de Classes de Domínio - Aprova Afiliação
-text
-Candidato ────── transforma-se em ──────▶ Voluntario
-    │                                      │
-    ├─ associa ────── Afiliacao ────── realiza ──▶ Aprovacao
-    │         (data, status)         (data, status, motivo)
-    └─ possui ──────▶ Perfil ──────▶ Habilidade/Interesse
-2. Diagrama de Sequência - Aprova Afiliação
-text
-RepresentanteRMS → AprovacaoBoundary → AprovacaoController → DAOs
-     │                  │                    │               │
-     │─ buscaCandidatos() │                    │               │
-     │◄─────────────────│                    │               │
-     │─ selecionaCandidato()│                    │               │
-     │◄─────────────────│                    │               │
-     │─ aprovarAfiliacao() │                    │               │
-     │◄─────────────────│                    │               │
-3. Diagrama de Classes Completo do Projeto
-Gestão de Pessoas: PessoaFisica, PessoaJuridica, Candidato, Voluntario
 
-Gestão de ONGs: ONG, Campanha, Vaga
+Entity (Domínio) Candidato, Afiliação, Aprovacao, Voluntario, etc
 
-Sistema de Recomendações: Recomendacao, Perfil, Habilidade, Interesse
 
-Comunicação: Mensagem, Notificacao
+DAO (Persistência) CandidatoDAO, AprovacaoDAO, VoluntarioDAO, etc
 
-Legal/Termos: Termo, Aceite, ItemTermo
+### 📊 Diagramas UML
 
-🔄 Casos de Uso Implementados
-✅ UC003 - Aprova Afiliação (PRINCIPAL)
-Ator: Representante da Rede Mais Social
+1. Diagrama de Classes de Domínio Completo - Aprova Afiliação e Solicita Afiliação
 
-Fluxo Principal:
+![17636888077074404020218177030191](https://github.com/user-attachments/assets/da00df40-6fd8-4c64-8b13-9888490cd561)
 
-Busca candidatos pendentes de aprovação
 
-Seleciona candidato específico
+2. Diagrama de Sequência - Aprova Afiliação 
 
-Analisa informações detalhadas
+![17636886928223355549959298297799](https://github.com/user-attachments/assets/8234d2aa-064c-4702-8bd0-7d903efd345f)
 
-Aprova/Rejeita afiliação
+3. Diagrama de Classes - Aprova Afiliação 
 
-Define perfil do voluntário (se aprovado)
+![1763688787164785801783618771041](https://github.com/user-attachments/assets/13b6be02-993c-4939-9705-6a895b3ded11)
 
-Gera recomendações de ONGs
 
-Cria credenciais de acesso
+### 🔄 Caso de Uso Implementado
 
-Envia emails de confirmação
+Caso de Uso
+<img width="473" height="218" alt="17636888613676842724933226598229" src="https://github.com/user-attachments/assets/ad04b095-e3d1-4351-a9ae-5c4f5a49311e" />
 
-Fluxos Alternativos:
+Fluxo Principal
+<img width="481" height="352" alt="17636888750405845678816227640522" src="https://github.com/user-attachments/assets/6bdc7008-09a9-499e-81a8-60d481ccc4fa" />
 
-Não há candidatos pendentes
+<img width="480" height="247" alt="17636888911096803981605847785211" src="https://github.com/user-attachments/assets/06aa92a3-e367-4633-9b77-3d11817eedb7" />
 
-Candidato rejeitado com motivo
+Fluxos Alternativos
+<img width="487" height="487" alt="17636889059772667788401297884556" src="https://github.com/user-attachments/assets/5acc06ee-5d73-4e03-82ba-b4d06cebbb11" />
 
-Não existem ONGs para recomendar
+<img width="492" height="285" alt="17636889177598400047712604508191" src="https://github.com/user-attachments/assets/81495950-46c1-4f49-90ac-c819411e6cc2" />
 
-📁 Estrutura do Projeto
-text
+
+Regra de Negócio Caso de Uso - Aprovação de Afiliação
+<img width="472" height="82" alt="17636889281492052511529567959587" src="https://github.com/user-attachments/assets/8543eb7b-a8b7-40f5-affb-b200c9b56a6f" />
+
+
+### 📁 Estrutura do Projeto
+
+```
 src/
 ├── boundary/
 │   └── AprovacaoBoundary.java          # Interface com usuário
@@ -147,76 +137,92 @@ docs/
 ├── banco.sql                          # Modelo completo do banco
 ├── diagramas/                         # Diagramas UML
 └── prototipos/                        # Telas do sistema
-🛠 Tecnologias e Ferramentas
+```
+
+### 🛠 Tecnologias e Ferramentas
+
 💻 Linguagens e Frameworks
-Java 8+: Linguagem principal
 
-UML: Modelagem dos diagramas
-
-SQL: Modelo de dados
+· Java 8+: Linguagem principal
+· UML: Modelagem dos diagramas
+· SQL: Modelo de dados
 
 🗃️ Persistência de Dados
-Abordagem: DAOs simulados (preparados para SGBD real)
 
-Modelo: 25 tabelas documentadas em banco.sql
-
-Pronto para: MySQL, Oracle, PostgreSQL
+· Abordagem: DAOs simulados (preparados para SGBD real)
+· Modelo: 25 tabelas documentadas em banco.sql
+· Pronto para: MySQL, Oracle, PostgreSQL
 
 🔧 Ferramentas de Desenvolvimento
-IDE: VS Code, Eclipse ou IntelliJ
 
-Controle de versão: GitHub
+· IDE: VS Code, Eclipse ou IntelliJ
+· Controle de versão: GitHub
+· Documentação: Wiki do GitHub
 
-Documentação: Wiki do GitHub
+### 🚀 Como Executar
 
-🚀 Como Executar
 📥 Pré-requisitos
-bash
+
+```bash
 # Java Development Kit 8 ou superior
 java -version
 
 # Git para clone do repositório
 git --version
+```
+
 ⚡ Execução Rápida
-bash
+
+```bash
 # 1. Clone o repositório
-git clone https://github.com/seu-usuario/rede-mais-social.git
+https://github.com/ccmsst/Rede-Mais-Social.wiki.git
 
 # 2. Navegue até o diretório
 cd rede-mais-social/src
 
 # 3. Compile o projeto
-javac -d bin boundary/*.java controller/*.java entity/*.java repository/*.java
+javac AprovacaoBoundary.java
 
 # 4. Execute o sistema
-java -cp bin boundary.AprovacaoBoundary
+java AprovacaoBoundary
+```
+
 🎮 Como Usar
-O sistema inicia automaticamente
 
-Digite 1 para buscar candidatos pendentes
+1. O sistema inicia automaticamente
+2. Digite 1 para buscar candidatos pendentes
+3. Selecione um candidato pelo ID
+4. Escolha A para aprovar ou R para rejeitar
+5. Siga as instruções na tela
 
-Selecione um candidato pelo ID
+### 🔄 Fluxos do Sistema
 
-Escolha A para aprovar ou R para rejeitar
-
-Siga as instruções na tela
-
-🔄 Fluxos do Sistema
 ✅ Fluxo Principal - Aprovação Bem-sucedida
-text
+
+```
 [INÍCIO] → Busca Candidatos → Seleciona Candidato → Analisa Dados → 
 [Aprova] → Cria Sessão → Registra Aprovação → Cria Voluntário → 
 [Recomenda] ONGs → Gera Credenciais → Envia Email → [FIM]
+```
+
 ❌ Fluxo Alternativo - Rejeição
-text
+
+```
 [INÍCIO] → Busca Candidatos → Seleciona Candidato → Analisa Dados → 
 [Rejeita] → Informa Motivo → Registra Rejeição → Envia Email → [FIM]
+```
+
 ⚠️ Fluxo Alternativo - Sem Candidatos
-text
+
+```
 [INÍCIO] → Busca Candidatos → [Lista Vazia] → Mensagem Informativa → [FIM]
-🗃️ Modelo de Dados
+```
+
+### 🗃️ Modelo de Dados
+
 📊 Principais Tabelas (banco.sql)
-sql
+
+```sql
 -- Candidatos e Afiliações
 CREATE TABLE Candidato (id_Candidato INTEGER PRIMARY KEY, ...);
 CREATE TABLE Afiliacao (id_afiliacao INTEGER PRIMARY KEY, ...);
@@ -232,52 +238,44 @@ CREATE TABLE Campanha (id_Campanha INTEGER PRIMARY KEY, ...);
 -- Perfis e Recomendações
 CREATE TABLE Perfil (id_perfil INTEGER PRIMARY KEY, ...);
 CREATE TABLE Recomendacao (id_recomendacao INTEGER PRIMARY KEY, ...);
+```
+
 🔗 Relações Principais
-Candidato 1:1 Afiliacao
 
-Afiliação 1:1 Aprovacao
+· Candidato 1:1 Afiliacao
+· Afiliação 1:1 Aprovacao
+· Aprovacao 1:1 Voluntario
+· Voluntario N:N ONG (via Recomendacao)
 
-Aprovacao 1:1 Voluntario
-
-Voluntario N:N ONG (via Recomendacao)
-
-👥 Contribuições Individuais
-📋 Divisão de Tarefas
-Membro	Contribuições
-Membro 1	Diagramas UML, Implementação Boundary, Documentação
-Membro 2	Implementação Controller, Entidades, Testes
-Membro 3	DAOs, Modelo de Dados, Persistência
-Membro 4	Casos de Uso, Regras de Negócio, Validações
 📖 Documentação na Wiki
+
 Cada membro publicou individualmente na Wiki:
 
-Diagramas UML desenvolvidos
+· Diagramas UML desenvolvidos
+· Código fonte implementado
+· Explicação das contribuições
+· Protótipos e modelos
 
-Código fonte implementado
+### 🎥 Vídeo Explicativo
+link do vídeo explicativo:  
 
-Explicação das contribuições
-
-Protótipos e modelos
-
-🎥 Vídeo Explicativo
 📹 Conteúdo do Vídeo
-Demonstração da correspondência UML ↔ Código
 
-Execução do fluxo principal de aprovação
-
-Explicação dos fluxos alternativos
-
-Mostra dos diagramas implementados
-
-Participação de todos os membros do grupo
+· Demonstração da correspondência UML ↔ Código
+· Execução do fluxo principal de aprovação
+· Explicação dos fluxos alternativos
+· Mostra dos diagramas implementados
+· Participação de todos os membros do grupo
 
 🎯 Pontos Chave do Vídeo
-Arquitetura MVC: Como as camadas se comunicam
 
-Padrão DAO: Abstração da persistência
+· Arquitetura MVC: Como as camadas se comunicam
+· Padrão DAO: Abstração da persistência
+· Correspondência UML: Diagramas → Código
+· Tratamento de Fluxos: Principal e alternativos
+· Preparação para SGBD: Modelo de dados completo
 
-Correspondência UML: Diagramas → Código
+---
 
-Tratamento de Fluxos: Principal e alternativos
-
-Preparação para SGBD: Modelo de dados completo
+Repositório: GitHub - Rede Mais Social
+Wiki: Documentação Completa
